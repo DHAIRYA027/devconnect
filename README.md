@@ -6,7 +6,9 @@ stack and Socket.io.
 
 [![CI](https://github.com/DHAIRYA027/devconnect/actions/workflows/ci.yml/badge.svg)](https://github.com/DHAIRYA027/devconnect/actions/workflows/ci.yml) ![Stack](https://img.shields.io/badge/stack-MERN-6e5bff) ![License](https://img.shields.io/badge/license-MIT-blue)
 
-**🔗 Live demo:** _coming soon_ &nbsp;·&nbsp; _Demo login:_ `aisha@demo.dev` / `password123`
+**🔗 Live demo:** **[devconnect-liard.vercel.app](https://devconnect-liard.vercel.app)** &nbsp;·&nbsp; _Demo login:_ `aisha@demo.dev` / `password123`
+
+> ⏳ The API runs on Render's free tier, which sleeps after inactivity — the **first** request may take ~50s to wake. Subsequent loads are instant.
 
 ---
 
