@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axios.js";
 import CreatePost from "../components/CreatePost.jsx";
 import PostCard from "../components/PostCard.jsx";
+import PostSkeleton from "../components/PostSkeleton.jsx";
 import WhoToFollow from "../components/WhoToFollow.jsx";
 
 export default function Feed() {
@@ -25,7 +26,11 @@ export default function Feed() {
       <main className="feed">
         <CreatePost onPost={handleNew} />
         {loading ? (
-          <div className="card muted">Loading your feed…</div>
+          <>
+            <PostSkeleton />
+            <PostSkeleton />
+            <PostSkeleton />
+          </>
         ) : posts.length === 0 ? (
           <div className="card empty">
             <h3>Your feed is quiet 🌱</h3>

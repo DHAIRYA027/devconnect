@@ -16,7 +16,7 @@ export default function Notifications() {
     api.put("/notifications/read").then(() => {
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     });
-  }, []);
+  }, [setNotifications]);
 
   return (
     <div className="layout-narrow">

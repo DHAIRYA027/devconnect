@@ -10,21 +10,27 @@ export default function Profile() {
   const { user: me, setUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Tracks which username the loaded data belongs to, so we can derive
+  // `loading` without a synchronous setState and ignore stale responses.
+  const [loadedFor, setLoadedFor] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
+    let active = true;
     Promise.all([
       api.get(`/users/${username}`),
       api.get(`/posts/user/${username}`),
-    ])
-      .then(([p, ps]) => {
-        setProfile(p.data);
-        setPosts(ps.data);
-      })
-      .finally(() => setLoading(false));
+    ]).then(([p, ps]) => {
+      if (!active) return;
+      setProfile(p.data);
+      setPosts(ps.data);
+      setLoadedFor(username);
+    });
+    return () => {
+      active = false;
+    };
   }, [username]);
 
+  const loading = loadedFor !== username;
   if (loading) return <div className="card muted layout-narrow">Loading profile…</div>;
   if (!profile) return <div className="card empty layout-narrow">User not found.</div>;
 

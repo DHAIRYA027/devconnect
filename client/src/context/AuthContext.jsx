@@ -5,15 +5,12 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Only start in a loading state if there's a token worth verifying.
+  const [loading, setLoading] = useState(() => !!localStorage.getItem("token"));
 
   // On first load, if we have a token, fetch the current user.
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+    if (!localStorage.getItem("token")) return;
     api
       .get("/auth/me")
       .then((res) => setUser(res.data.user))

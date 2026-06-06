@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios.js";
 import PostCard from "../components/PostCard.jsx";
+import PostSkeleton from "../components/PostSkeleton.jsx";
 import WhoToFollow from "../components/WhoToFollow.jsx";
 
 export default function Explore() {
@@ -21,7 +22,11 @@ export default function Explore() {
       <main className="feed">
         <h2 className="page-title">Explore</h2>
         {loading ? (
-          <div className="card muted">Loading…</div>
+          <>
+            <PostSkeleton />
+            <PostSkeleton />
+            <PostSkeleton />
+          </>
         ) : (
           posts.map((p) => <PostCard key={p._id} post={p} onDelete={handleDelete} />)
         )}
