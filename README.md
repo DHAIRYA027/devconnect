@@ -4,9 +4,9 @@ A full-stack social platform where developers share posts (with code snippets),
 follow each other, and get **real-time notifications**. Built with the MERN
 stack and Socket.io.
 
-![Stack](https://img.shields.io/badge/stack-MERN-6e5bff) ![License](https://img.shields.io/badge/license-MIT-blue)
+[![CI](https://github.com/DHAIRYA027/devconnect/actions/workflows/ci.yml/badge.svg)](https://github.com/DHAIRYA027/devconnect/actions/workflows/ci.yml) ![Stack](https://img.shields.io/badge/stack-MERN-6e5bff) ![License](https://img.shields.io/badge/license-MIT-blue)
 
-> _Demo login:_ `aisha@demo.dev` / `password123` (after seeding)
+**🔗 Live demo:** _coming soon_ &nbsp;·&nbsp; _Demo login:_ `aisha@demo.dev` / `password123`
 
 ---
 
@@ -109,6 +109,29 @@ or register a new one.
   server response, so the app feels snappy.
 - **Central error handling** — controllers `throw`; one Express middleware formats
   every error response (incl. Mongo duplicate-key and validation errors).
+
+## ☁️ Deployment
+
+The app is deployed across three free-tier services:
+
+- **Database** — MongoDB Atlas (free M0 cluster)
+- **API** — Render web service (see [`render.yaml`](render.yaml) Blueprint)
+- **Frontend** — Vercel (Vite preset; SPA routing via [`client/vercel.json`](client/vercel.json))
+
+Environment variables required in production:
+
+| Service | Variable | Value |
+| ------- | -------- | ----- |
+| Render  | `MONGO_URI` | Atlas connection string |
+| Render  | `JWT_SECRET` | long random string |
+| Render  | `CLIENT_URL` | the Vercel frontend URL (for CORS) |
+| Vercel  | `VITE_API_URL` | the Render API URL |
+
+## ✅ CI
+
+Every push and pull request runs [GitHub Actions](.github/workflows/ci.yml):
+the client is linted and built, and the API is smoke-tested end-to-end against a
+real MongoDB service container.
 
 ## 📜 License
 
