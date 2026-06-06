@@ -5,5 +5,4 @@ dist/
 .DS_Store
 
 # Local-only files (kept out of the public repo)
-.claude/
 INTERVIEW_NOTES.md
