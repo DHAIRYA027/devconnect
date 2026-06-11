@@ -4,6 +4,7 @@ import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import Avatar from "../components/Avatar.jsx";
 import PostCard from "../components/PostCard.jsx";
+import { GithubIcon, PencilIcon, UserPlusIcon } from "../components/Icons.jsx";
 
 export default function Profile() {
   const { username } = useParams();
@@ -88,14 +89,20 @@ export default function Profile() {
           <div className="profile-actions">
             {isMe ? (
               <Link to="/settings" className="btn btn-ghost">
-                Edit profile
+                <PencilIcon width={15} height={15} /> Edit profile
               </Link>
             ) : (
               <button
                 className={`btn ${isFollowing ? "btn-ghost" : "btn-primary"}`}
                 onClick={toggleFollow}
               >
-                {isFollowing ? "Following" : "Follow"}
+                {isFollowing ? (
+                  "Following"
+                ) : (
+                  <>
+                    <UserPlusIcon width={15} height={15} /> Follow
+                  </>
+                )}
               </button>
             )}
             {profile.githubUrl && (
@@ -105,7 +112,7 @@ export default function Profile() {
                 target="_blank"
                 rel="noreferrer"
               >
-                GitHub ↗
+                <GithubIcon width={15} height={15} /> GitHub
               </a>
             )}
           </div>

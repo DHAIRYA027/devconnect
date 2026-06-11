@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import Avatar from "./Avatar.jsx";
+import { UserPlusIcon } from "./Icons.jsx";
 
 // Sidebar widget: suggests users you aren't following yet.
 export default function WhoToFollow() {
@@ -39,7 +40,7 @@ export default function WhoToFollow() {
             </div>
           </Link>
           <button className="btn btn-primary btn-sm" onClick={() => follow(p._id)}>
-            Follow
+            <UserPlusIcon width={14} height={14} /> Follow
           </button>
         </div>
       ))}

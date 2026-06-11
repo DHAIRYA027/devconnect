@@ -1,11 +1,14 @@
 import { useState } from "react";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useToast } from "../context/ToastContext.jsx";
 import Avatar from "./Avatar.jsx";
+import { CodeIcon } from "./Icons.jsx";
 
 // Composer for a new post, with an optional code snippet toggle.
 export default function CreatePost({ onPost }) {
   const { user } = useAuth();
+  const { showToast } = useToast();
   const [text, setText] = useState("");
   const [code, setCode] = useState("");
   const [showCode, setShowCode] = useState(false);
@@ -25,6 +28,9 @@ export default function CreatePost({ onPost }) {
       setText("");
       setCode("");
       setShowCode(false);
+      showToast("Post published");
+    } catch (err) {
+      showToast(err.response?.data?.message || "Couldn't publish the post", "error");
     } finally {
       setBusy(false);
     }
@@ -56,10 +62,10 @@ export default function CreatePost({ onPost }) {
       <div className="create-post-actions">
         <button
           type="button"
-          className="btn btn-ghost"
+          className={`btn btn-ghost btn-sm ${showCode ? "btn-toggled" : ""}`}
           onClick={() => setShowCode((s) => !s)}
         >
-          {showCode ? "Remove code" : "</> Add code"}
+          <CodeIcon width={15} height={15} /> {showCode ? "Remove code" : "Add code"}
         </button>
         <button className="btn btn-primary" disabled={!text.trim() || busy}>
           {busy ? "Posting…" : "Post"}

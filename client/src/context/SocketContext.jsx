@@ -1,12 +1,20 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useAuth } from "./AuthContext.jsx";
+import { useToast } from "./ToastContext.jsx";
 
 const SocketContext = createContext(null);
+
+const VERB = {
+  like: "liked your post",
+  comment: "commented on your post",
+  follow: "started following you",
+};
 
 // Manages the single Socket.io connection and a live notification feed.
 export const SocketProvider = ({ children }) => {
   const { user } = useAuth();
+  const { showToast } = useToast();
   const [notifications, setNotifications] = useState([]);
 
   // Connect when logged in, disconnect when logged out. The socket lives
@@ -19,10 +27,11 @@ export const SocketProvider = ({ children }) => {
     });
     socket.on("notification:new", (n) => {
       setNotifications((prev) => [n, ...prev]);
+      showToast(`${n.sender?.name || "Someone"} ${VERB[n.type] || "interacted with you"}`);
     });
 
     return () => socket.disconnect();
-  }, [user]);
+  }, [user, showToast]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 

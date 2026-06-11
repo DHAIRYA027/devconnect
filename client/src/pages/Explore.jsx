@@ -3,6 +3,7 @@ import api from "../api/axios.js";
 import PostCard from "../components/PostCard.jsx";
 import PostSkeleton from "../components/PostSkeleton.jsx";
 import WhoToFollow from "../components/WhoToFollow.jsx";
+import RepoCard from "../components/RepoCard.jsx";
 
 export default function Explore() {
   const [posts, setPosts] = useState([]);
@@ -33,6 +34,7 @@ export default function Explore() {
       </main>
       <aside className="sidebar">
         <WhoToFollow />
+        <RepoCard />
       </aside>
     </div>
   );

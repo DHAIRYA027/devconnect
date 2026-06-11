@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
+import AuthLayout from "../components/AuthLayout.jsx";
 
 export default function Login() {
-  const { login } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+
+  // Already signed in? Straight to the feed.
+  if (user) return <Navigate to="/" replace />;
 
   const submit = async (e) => {
     e.preventDefault();
@@ -17,7 +21,7 @@ export default function Login() {
       await login(form.email, form.password);
       navigate("/");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.response?.data?.message || "Login failed — please try again");
     } finally {
       setBusy(false);
     }
@@ -26,43 +30,49 @@ export default function Login() {
   const fillDemo = () => setForm({ email: "aisha@demo.dev", password: "password123" });
 
   return (
-    <div className="auth-page">
-      <div className="auth-card card">
-        <h1 className="brand brand-lg">
-          &lt;Dev<span>Connect</span>/&gt;
-        </h1>
-        <p className="auth-sub">The social network for developers.</p>
+    <AuthLayout>
+      <h2>Welcome back</h2>
+      <p className="auth-form-sub">Sign in to your account to continue.</p>
 
-        {error && <div className="alert">{error}</div>}
+      {error && <div className="alert">{error}</div>}
 
-        <form onSubmit={submit}>
-          <label>Email</label>
-          <input
-            type="email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            required
-          />
-          <label>Password</label>
-          <input
-            type="password"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-            required
-          />
-          <button className="btn btn-primary btn-block" disabled={busy}>
-            {busy ? "Signing in…" : "Sign in"}
-          </button>
-        </form>
-
-        <button className="btn btn-ghost btn-block" onClick={fillDemo}>
-          Use demo account
+      <form onSubmit={submit}>
+        <label htmlFor="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          autoComplete="email"
+          placeholder="you@example.com"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          required
+        />
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          autoComplete="current-password"
+          placeholder="••••••••"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          required
+        />
+        <button className="btn btn-primary btn-block" disabled={busy}>
+          {busy ? "Signing in…" : "Sign in"}
         </button>
+      </form>
 
-        <p className="auth-switch">
-          New here? <Link to="/register">Create an account</Link>
-        </p>
+      <div className="auth-divider">
+        <span>or</span>
       </div>
-    </div>
+
+      <button className="btn btn-ghost btn-block" onClick={fillDemo} type="button">
+        Try the demo account
+      </button>
+
+      <p className="auth-switch">
+        New here? <Link to="/register">Create an account</Link>
+      </p>
+    </AuthLayout>
   );
 }

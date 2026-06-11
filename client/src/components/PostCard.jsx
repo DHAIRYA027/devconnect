@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import api from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import Avatar from "./Avatar.jsx";
+import { HeartIcon, CommentIcon, TrashIcon, SendIcon } from "./Icons.jsx";
 import { timeAgo } from "../utils/format.js";
 
 export default function PostCard({ post, onDelete }) {
@@ -11,6 +12,7 @@ export default function PostCard({ post, onDelete }) {
   const [comments, setComments] = useState(post.comments || []);
   const [commentText, setCommentText] = useState("");
   const [showComments, setShowComments] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const liked = likes.some((id) => id === user._id || id?._id === user._id);
 
@@ -30,13 +32,16 @@ export default function PostCard({ post, onDelete }) {
   const submitComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
-    const { data } = await api.post(`/posts/${post._id}/comment`, { text: commentText });
-    setComments(data);
-    setCommentText("");
+    try {
+      const { data } = await api.post(`/posts/${post._id}/comment`, { text: commentText });
+      setComments(data);
+      setCommentText("");
+    } catch {
+      /* leave the draft in place so the user can retry */
+    }
   };
 
   const remove = async () => {
-    if (!confirm("Delete this post?")) return;
     await api.delete(`/posts/${post._id}`);
     onDelete?.(post._id);
   };
@@ -53,11 +58,29 @@ export default function PostCard({ post, onDelete }) {
             </div>
           </div>
         </Link>
-        {post.author?._id === user._id && (
-          <button className="icon-btn" title="Delete" onClick={remove}>
-            ✕
-          </button>
-        )}
+        {post.author?._id === user._id &&
+          (confirmingDelete ? (
+            <div className="confirm-delete">
+              <span>Delete?</span>
+              <button className="btn btn-danger btn-sm" onClick={remove}>
+                Yes
+              </button>
+              <button
+                className="btn btn-ghost btn-sm"
+                onClick={() => setConfirmingDelete(false)}
+              >
+                No
+              </button>
+            </div>
+          ) : (
+            <button
+              className="icon-btn"
+              title="Delete post"
+              onClick={() => setConfirmingDelete(true)}
+            >
+              <TrashIcon width={16} height={16} />
+            </button>
+          ))}
       </header>
 
       <p className="post-text">{post.text}</p>
@@ -69,11 +92,19 @@ export default function PostCard({ post, onDelete }) {
       )}
 
       <div className="post-actions">
-        <button className={`action ${liked ? "liked" : ""}`} onClick={toggleLike}>
-          {liked ? "♥" : "♡"} {likes.length}
+        <button
+          className={`action ${liked ? "liked" : ""}`}
+          onClick={toggleLike}
+          aria-label={liked ? "Unlike" : "Like"}
+        >
+          <HeartIcon filled={liked} width={17} height={17} /> {likes.length}
         </button>
-        <button className="action" onClick={() => setShowComments((s) => !s)}>
-          💬 {comments.length}
+        <button
+          className="action"
+          onClick={() => setShowComments((s) => !s)}
+          aria-label="Comments"
+        >
+          <CommentIcon width={17} height={17} /> {comments.length}
         </button>
       </div>
 
@@ -96,8 +127,12 @@ export default function PostCard({ post, onDelete }) {
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
             />
-            <button className="btn btn-primary btn-sm" disabled={!commentText.trim()}>
-              Send
+            <button
+              className="btn btn-primary btn-sm btn-icon"
+              disabled={!commentText.trim()}
+              aria-label="Send comment"
+            >
+              <SendIcon width={15} height={15} />
             </button>
           </form>
         </div>

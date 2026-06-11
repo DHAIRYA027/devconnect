@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import { ToastProvider } from "./context/ToastContext.jsx";
 import { SocketProvider } from "./context/SocketContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Navbar from "./components/Navbar.jsx";
@@ -23,8 +24,9 @@ const Shell = ({ children }) => (
 export default function App() {
   return (
     <AuthProvider>
-      <SocketProvider>
-        <BrowserRouter>
+      <ToastProvider>
+        <SocketProvider>
+          <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -34,8 +36,9 @@ export default function App() {
             <Route path="/settings" element={<Shell><EditProfile /></Shell>} />
             <Route path="/u/:username" element={<Shell><Profile /></Shell>} />
           </Routes>
-        </BrowserRouter>
-      </SocketProvider>
+          </BrowserRouter>
+        </SocketProvider>
+      </ToastProvider>
     </AuthProvider>
   );
 }
